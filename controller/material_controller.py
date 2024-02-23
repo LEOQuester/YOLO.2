@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from model.engineAI import Engine
 from service.material_service import Material
-from repo.firebaseConfig import db
+
 
 material_controller = Blueprint('material_controller', __name__)
 
@@ -78,6 +78,7 @@ class MaterialController():
         media_type = request.args.get('media_type', default='', type=str)
         api_key = request.args.get('api_key', default='', type=str)
 
+        #incrementing users request count
         if not title or not media_type or not api_key:
             return jsonify({"error": "Both 'title' and 'media_type' and api_key parameters are required."}), 400
         query = db.collection('users').where('api_key', '==', api_key).limit(1).get()
@@ -88,6 +89,9 @@ class MaterialController():
         query[0].reference.set({
             'request_count' : count + 1
         }, merge = True)
+        #-------------------------------------------------------------------------------------------------
+
+
         material = Material()
         if media_type == "movie" or media_type == "tv":
             result = material.media_from_title(title=title, media_type=media_type)
