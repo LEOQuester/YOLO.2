@@ -3,7 +3,7 @@ from dataclasses import dataclass
 class User:
     email: str = None
     agree: bool = None
-    password: str = None
+    password: bytes = None
     country: str = None
     name: str = None
     premium: bool = None

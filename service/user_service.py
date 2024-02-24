@@ -6,7 +6,6 @@ class UserService():
     def __init__(self):
         self.__driver =  FirebaseDriver()
 
-
     def createUser(self, user: User):
         users = self.__driver.find_by_parameter("users", {"email": user.email})
         if  users:
@@ -21,7 +20,7 @@ class UserService():
         if not users:
             return {"success": False, "message": "User not found", "user": None}
         user = users[0]
-        if not self.__verify_password(password, user['password']):
+        if not self.verify_password(password.encode('utf-8'), user['password']):
             return {"success": False, "message": "Invalid email or password", "user": None}
         else:
             key = user['password'].decode('utf-8')
@@ -43,12 +42,10 @@ class UserService():
 
         return filtered_users
     
-    def __verify_password(self, password, hashed_password):
-        print(password.encode('utf-8'))
-        print(hashed_password)
-        return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+    def verify_password(self, password, hashed_password):
+        return bcrypt.checkpw(password, hashed_password)
 
     def __hash_password(self, password):
         salt = bcrypt.gensalt()
-        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        hashed_password = bcrypt.hashpw(password, salt)
         return hashed_password
