@@ -39,3 +39,5 @@ class DeveloperService:
         self.__driver.update_document('users', developer_data.get("doc_id"), developer.to_dict())
         return {"success": True, "message": "user found and developer unlocked", "api_key": developer.api_key}
     
+    def save_request(self, api_key):
+        return True

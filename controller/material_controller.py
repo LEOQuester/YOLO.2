@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from model.engineAI import Engine
+from service.developer_service import DeveloperService
 from service.material_service import Material
 
 
@@ -10,6 +11,9 @@ def get_success_message():
     return "all the materials"
 
 class MaterialController():
+
+    __developer_Service = DeveloperService()
+    __material = Material()
 
     @staticmethod
     @material_controller.route("/keywords", methods=["POST"])
@@ -36,8 +40,7 @@ class MaterialController():
         keywords_param = request.args.get('keywords')
         keywords = keywords_param.split(',') if keywords_param else []
         media_type = request.args.get('media_type')
-        material = Material()
-        return jsonify(material.media_from_keywords(keywords, media_type))
+        return jsonify(MaterialController.__material.media_from_keywords(keywords, media_type))
 
 
     @material_controller.route('/songs', methods=[
@@ -46,8 +49,7 @@ class MaterialController():
         keywords_string = request.args.get('keywords', default='', type=str)
         media_type = request.args.get('media_type', default='', type=str)
         keywords_array = keywords_string.split(',')
-        material = Material()
-        result = material.get_songs(keywords_array, media_type)
+        result = MaterialController.__material.get_songs(keywords_array, media_type)
         return jsonify(result)
 
 
@@ -55,8 +57,7 @@ class MaterialController():
     def get_reads():
         keywords_string = request.args.get('keywords', default='', type=str)
         keywords_array = keywords_string.split(',')
-        material = Material()
-        return jsonify(material.get_books(keywords_array))
+        return jsonify(MaterialController.__material.get_books(keywords_array))
 
 
     @material_controller.route('/anime', methods=[
@@ -65,8 +66,7 @@ class MaterialController():
         keywords_string = request.args.get('keywords', default='', type=str)
         media_type = request.args.get('media_type', default='', type=str)
         keywords_array = keywords_string.split(',')
-        material = Material()
-        return material.get_anime(keywords_array, media_type)
+        return MaterialController.__material.get_anime(keywords_array, media_type)
     
 
     # public endpoint need a dynamic api key assiging and validation for developer role unlocked users
@@ -78,19 +78,8 @@ class MaterialController():
         media_type = request.args.get('media_type', default='', type=str)
         api_key = request.args.get('api_key', default='', type=str)
 
-        #incrementing users request count
-        if not title or not media_type or not api_key:
-            return jsonify({"error": "Both 'title' and 'media_type' and api_key parameters are required."}), 400
-        query = db.collection('users').where('api_key', '==', api_key).limit(1).get()
-        if not query:
-            return jsonify({'error': 'invalid api Key or key not exist'}), 404
-
-        count = query[0].to_dict()['request_count']
-        query[0].reference.set({
-            'request_count' : count + 1
-        }, merge = True)
-        #-------------------------------------------------------------------------------------------------
-
+        if MaterialController.__developer_Service.save_request(api_key) == False:
+            return jsonify({"error": "api did not accept"}), 400
 
         material = Material()
         if media_type == "movie" or media_type == "tv":
