@@ -1,17 +1,17 @@
 from dataclasses import dataclass
 @dataclass
-class Collections:
+class Collection:
     contents: dict = None
     description: str = None
     duration: str = None
-    Keywords: list = None
+    keywords: list = None
     title: str = None
     premium: bool = False
 
     def to_dict(self) -> dict:
         collection_dict = {
             'contents': self.contents,
-            'Keywords': self.Keywords,
+            'keywords': self.keywords,
             'title': self.title,
             'description': self.description,
             'duration': self.duration,

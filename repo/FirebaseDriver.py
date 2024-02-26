@@ -73,6 +73,18 @@ class FirebaseDriver:
             return doc.to_dict()
         else:
             return None
+    
+    def get_all_documents(self, collection: str):
+        """
+        Retrieves all documents from a specified collection.
+
+        :param collection: Collection name
+        :return: List of JSON objects containing data from all documents in the collection
+        """
+        collection_ref = self.__db.collection(collection)
+        query_results = collection_ref.get()
+        documents = [doc.to_dict() for doc in query_results]
+        return documents
         
     def find_by_parameter(self, collection: str, query_params: dict):
         """
@@ -93,15 +105,16 @@ class FirebaseDriver:
 
     def update_document(self, collection: str, document: str, data):
         """
-        Updates a document with the provided data
+        Updates a document with the provided data, merging it with existing data.
         :param collection: collection name
         :param document: document name
-        :param data: document data
+        :param data: document data to be merged
         :return: reference to the updated document
         """
         ref = self.__db.collection(collection).document(document)
-        ref.update(data)
+        ref.update(data, merge=True)  # Merge the provided data with existing document data
         return ref
+
 
     def delete_document(self, collection: str, document: str):
         """

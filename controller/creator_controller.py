@@ -1,7 +1,7 @@
-from flask import Flask, Blueprint
+from flask import Blueprint
 
 creator_controller = Blueprint('creator_controller', __name__)
 
 @creator_controller.route('/', methods=['GET'])
-def get_success_message():
+def save_collection():
     return "retrieve all creator details"
