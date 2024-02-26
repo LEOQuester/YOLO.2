@@ -16,7 +16,7 @@ class AdminController():
 
         if 'password' in data:
             data['password'] = data['password'].encode()
-        admin = Admin(email=data["email"], password=data["password"])
+        admin = Admin(email=data["email"], password=data["password"], name=data["name"])
         return jsonify(AdminController.__admin_service.create_admin(admin))
     
     @staticmethod
