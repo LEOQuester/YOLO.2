@@ -9,9 +9,9 @@ class AdminService():
     def create_admin(self, admin: Admin):
         users = self.__driver.find_by_parameter("admin", {"email": admin.email})
         if  users:
-            return {"success": False, "message": "user already exist", "user": None}
+            return {"success": False, "message": "admin already exist", "user": None}
         admin.password = self.__hash_password(admin.password)
-        operation = self.__driver.create_document('users', admin.to_dict())
+        operation = self.__driver.create_document('admin', admin.to_dict())
         return operation['doc_id']
     
     def login_admin(self, email, password):
