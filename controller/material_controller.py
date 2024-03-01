@@ -32,7 +32,7 @@ class MaterialController():
         
         engine = Engine()
         response = engine.query(prompt)
-        return jsonify(response)
+        return jsonify(response), 200
 
         
     @material_controller.route('/movies', methods=[
