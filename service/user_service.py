@@ -9,11 +9,11 @@ class UserService():
     def createUser(self, user: User):
         users = self.__driver.find_by_parameter("users", {"email": user.email})
         if  users:
-            return {"success": False, "message": "user already exist", "user": None}
+            return {"success": False}
         user.password = self.__hash_password(user.password)
         user_dict = user.to_dict()
         operation = self.__driver.create_document('users', user_dict)
-        return operation['doc_id']
+        return {"success": True}
     
     def login_user(self, email, password):
         users = self.__driver.find_by_parameter("users", {"email": email})

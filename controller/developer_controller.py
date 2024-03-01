@@ -1,7 +1,9 @@
 from flask import Blueprint, request
 from service.developer_service import DeveloperService
+from flask_cors import CORS
 
 developer_controller = Blueprint('developer_controller', __name__)
+CORS(developer_controller)
 
 class DeveloperController():
     __developer_service = DeveloperService()

@@ -1,8 +1,10 @@
 from flask import jsonify, Blueprint, request
 from data.admin import Admin
 from service.admin_service import AdminService
+from flask_cors import CORS
 
 admin_controller = Blueprint('admin_controller', __name__)
+CORS(admin_controller)
 
 class AdminController():
     __admin_service = AdminService()

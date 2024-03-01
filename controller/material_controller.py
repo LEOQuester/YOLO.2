@@ -2,9 +2,10 @@ from flask import Blueprint, request, jsonify
 from model.engineAI import Engine
 from service.developer_service import DeveloperService
 from service.material_service import Material
-
+from flask_cors import CORS
 
 material_controller = Blueprint('material_controller', __name__)
+CORS(material_controller)
 
 @material_controller.route('/', methods=['GET'])
 def get_success_message():
