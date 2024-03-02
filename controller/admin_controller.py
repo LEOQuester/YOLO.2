@@ -25,5 +25,9 @@ class AdminController():
     @admin_controller.route('/login', methods=["POST"])
     def login_users():
         data = request.json
-        return AdminController.__admin_service.login_admin(data["email"], data["password"])
+        response = AdminController.__admin_service.login_admin(data["email"], data["password"])
+        if response["success"]:
+            return response, 200
+        else:
+            return response, 400
 
