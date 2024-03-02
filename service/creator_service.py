@@ -11,21 +11,20 @@ class CreatorService:
         self.__driver = FirebaseDriver()
         self.__creator = Creator()
 
-    def update_to_creator(self, email, phone, sm_links):
+    def update_to_creator(self, email):
         creators = self.__driver.find_by_parameter("user", {"email": email})
         if not creators:
             return False
         creator = creators[0]
-        for key, value in creator.items():
-            if hasattr(self.__creator, key):
-                setattr(self.__creator, key, value)
-        self.__creator.contact_number = phone
-        self.__creator.sm_links = sm_links
-        if self.__driver.update_document("user", creator.to_dict()):
+        # set creator to true in firebase
+        if self.__driver.update_document("user", creator["doc_id"], {"creator": True}):
             return {"success": True, "message": "Creator Portal Unlocked Successfully"}
+        else:
+            return {"success": False}
     
     def get_all_creators(self):
-        return self.__driver.find_by_parameter("collections", {"creator" : True})
+        # get users with the role creator set to true
+        return self.__driver.find_by_parameter("user", {"creatr": True})
     
     def send_otp(self, phone):
         account_sid = "ACbd96a0cd59a5ac3fcd2b40cf0a785304"
@@ -52,3 +51,18 @@ class CreatorService:
             return {"success": False, "message": "Phone Number changed or not found"}
         if numbers[0]["otp"] == otp:
             return {"success": True, "message": "OTP validated successfully"}
+
+
+    def add_request(self, email, type, link, business_email, description):
+        #find user by email, add this info there, and set a flag for request as pending
+        user = self.__driver.find_by_parameter("user", {"email": email})
+        print(email)
+        if not user:
+            return {"success": False, "message": "User not found"}
+        user = user[0]
+        user["request"] = {"type": type, "link": link, "business_email": business_email, "description": description, "status": "pending"}
+        if self.__driver.update_document("user", user.to_dict()):
+            return {"success": True, "message": "Request added successfully"}
+        else:
+            return {"success": False, "message": "Request failed to add"}
+
