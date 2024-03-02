@@ -12,19 +12,19 @@ class CreatorService:
         self.__creator = Creator()
 
     def update_to_creator(self, email):
-        creators = self.__driver.find_by_parameter("user", {"email": email})
+        creators = self.__driver.find_by_parameter("users", {"email": email})
         if not creators:
             return False
         creator = creators[0]
         # set creator to true in firebase
-        if self.__driver.update_document("user", creator["doc_id"], {"creator": True}):
+        if self.__driver.update_document("users", creator["doc_id"], {"creator": True}):
             return {"success": True, "message": "Creator Portal Unlocked Successfully"}
         else:
             return {"success": False}
     
     def get_all_creators(self):
         # get users with the role creator set to true
-        return self.__driver.find_by_parameter("user", {"creatr": True})
+        return self.__driver.find_by_parameter("users", {"creator": True})
     
     def send_otp(self, phone):
         account_sid = "ACbd96a0cd59a5ac3fcd2b40cf0a785304"
@@ -44,6 +44,12 @@ class CreatorService:
                                     to=to_whatsapp_number
                                 )
         return True
+
+    def get_pending_requests(self):
+        # get users with the request flag set to pending
+        pendings = self.__driver.find_by_parameter("users", {"request": "pending"})
+        print(pendings)
+        return pendings
             
     def check_otp(self, phone, otp):
         numbers = self.__driver.find_by_parameter("creator_validation_otps", {"phone": phone})
