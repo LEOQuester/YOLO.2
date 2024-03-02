@@ -55,13 +55,13 @@ class CreatorService:
 
     def add_request(self, email, type, link, business_email, description):
         #find user by email, add this info there, and set a flag for request as pending
-        user = self.__driver.find_by_parameter("user", {"email": email})
-        print(email)
+        user = self.__driver.find_by_parameter("users", {"email": email})
+        print(email, user)
         if not user:
             return {"success": False, "message": "User not found"}
         user = user[0]
-        user["request"] = {"type": type, "link": link, "business_email": business_email, "description": description, "status": "pending"}
-        if self.__driver.update_document("user", user.to_dict()):
+        print(user)
+        if self.__driver.update_document("users", user["doc_id"], {"type": type, "link": link, "business_email": business_email, "description": description, "request": "pending"}):
             return {"success": True, "message": "Request added successfully"}
         else:
             return {"success": False, "message": "Request failed to add"}

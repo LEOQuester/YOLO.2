@@ -112,7 +112,7 @@ class FirebaseDriver:
         :return: reference to the updated document
         """
         ref = self.__db.collection(collection).document(document)
-        ref.update(data, merge=True)  # Merge the provided data with existing document data
+        ref.update(data)  # Merge the provided data with existing document data
         return ref
 
 
