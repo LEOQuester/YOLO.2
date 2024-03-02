@@ -15,14 +15,21 @@ class UserController():
         if 'password' in data:
             data['password'] = data['password'].encode()
         user = User(**data)
-        return UserController.__user_service.createUser(user), 200
-        
-    
+        response = UserController.__user_service.createUser(user)
+        if response["success"]:
+            return response, 200
+        else:
+            return response, 400
+
     @staticmethod
     @user_controller.route('/login', methods=["POST"])
     def login_users():
         data = request.json
-        return UserController.__user_service.login_user(data["email"], data["password"]), 200
+        response =  UserController.__user_service.login_user(data["email"], data["password"])
+        if response["success"]:
+            return response, 200
+        else:
+            return response, 400
     
     @staticmethod
     @user_controller.route('/', methods=["GET"])
