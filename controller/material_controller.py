@@ -35,6 +35,7 @@ class MaterialController():
         return jsonify(response), 200
 
         
+    @staticmethod
     @material_controller.route('/movies', methods=[
         'GET'])  # example request : http://localhost:5000/movies?keywords=marvel,adventure&media_type=movie (movie / tv)
     def get_movies():
@@ -43,7 +44,7 @@ class MaterialController():
         media_type = request.args.get('media_type')
         return jsonify(MaterialController.__material.media_from_keywords(keywords, media_type))
 
-
+    @staticmethod
     @material_controller.route('/songs', methods=[
         'GET'])  # example request : http://localhost:5000/songs?keywords=marvel,adventure&media_type=song (song / video)
     def get_audio():
@@ -53,14 +54,14 @@ class MaterialController():
         result = MaterialController.__material.get_songs(keywords_array, media_type)
         return jsonify(result)
 
-
+    @staticmethod
     @material_controller.route('/books', methods=['GET'])  # example request : http://localhost:5000/books?keywords=marvel,adventure
     def get_reads():
         keywords_string = request.args.get('keywords', default='', type=str)
         keywords_array = keywords_string.split(',')
         return jsonify(MaterialController.__material.get_books(keywords_array))
 
-
+    @staticmethod
     @material_controller.route('/anime', methods=[
         'GET'])  # example request : http://localhost:5000/anime?keywords=marvel,adventure&media_type=movie (movie / tv)
     def get_animes():
@@ -71,7 +72,8 @@ class MaterialController():
     
 
     # public endpoint need a dynamic api key assiging and validation for developer role unlocked users
-    @material_controller.route('/api/media', methods=[
+    @staticmethod
+    @material_controller.route('/media', methods=[
         'GET'])  # example request : http://localhost:5000/api/media?title=TITLE_OF_THE_CONTENT&media_type=MEDIA&api_key=JSHBKSDBKSDCNJNSKJNJSKNAKJNAK (movie,tv, anime_movie, anime_tv, song, book)
     def get_media():
         # Get parameters from the query string

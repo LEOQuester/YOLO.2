@@ -21,7 +21,7 @@ app.register_blueprint(user_controller, url_prefix="/users")
 app.register_blueprint(developer_controller, url_prefix="/developers")
 app.register_blueprint(admin_controller, url_prefix="/admin")
 app.register_blueprint(creator_controller, url_prefix="/creators")
-app.register_blueprint(material_controller, url_prefix="/materials")
+app.register_blueprint(material_controller, url_prefix="/api")
 app.register_blueprint(collection_controller, url_prefix="/collections")
 app.register_blueprint(payment_controller, url_prefix="/payment")
 
