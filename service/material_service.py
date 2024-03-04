@@ -129,12 +129,14 @@ class Material():
             return None
 
     def get_books(self, keywords):
+        print(keywords)
         url = "https://www.googleapis.com/books/v1/volumes"
         q = ' '.join(keywords)
         params = {'q': q}
 
         try:
             response = requests.get(url, params=params)
+            print(response.json())
             response.raise_for_status()  # Raise an exception for bad requests
             data = response.json()
 

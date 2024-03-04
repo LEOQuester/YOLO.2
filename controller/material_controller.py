@@ -4,6 +4,8 @@ from service.developer_service import DeveloperService
 from service.material_service import Material
 from flask_cors import CORS
 
+
+#TODO: BAD OUTPUT, CHECK THE RESPONSES, SENDS SAME EVERYTIME
 material_controller = Blueprint('material_controller', __name__)
 CORS(material_controller)
 
@@ -36,7 +38,7 @@ class MaterialController():
 
         
     @staticmethod
-    @material_controller.route('/movies', methods=[
+    @material_controller.route('/tv', methods=[
         'GET'])  # example request : http://localhost:5000/movies?keywords=marvel,adventure&media_type=movie (movie / tv)
     def get_movies():
         keywords_param = request.args.get('keywords')
@@ -59,6 +61,7 @@ class MaterialController():
     def get_reads():
         keywords_string = request.args.get('keywords', default='', type=str)
         keywords_array = keywords_string.split(',')
+        print(keywords_array)
         return jsonify(MaterialController.__material.get_books(keywords_array))
 
     @staticmethod
