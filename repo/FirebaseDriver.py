@@ -85,6 +85,23 @@ class FirebaseDriver:
         query_results = collection_ref.get()
         documents = [doc.to_dict() for doc in query_results]
         return documents
+
+    def get_all_documents_with_ids(self, collection: str):
+        """
+        Retrieves all documents from a specified collection along with their document IDs.
+
+        :param collection: Collection name
+        :return: List of dictionaries containing document data with document IDs included
+        """
+        collection_ref = self.__db.collection(collection)
+        query_results = collection_ref.get()
+        documents = []
+        for doc in query_results:
+            doc_data = doc.to_dict()
+            doc_data['doc_id'] = doc.id
+            documents.append(doc_data)
+        return documents
+
         
     def find_by_parameter(self, collection: str, query_params: dict):
         """
