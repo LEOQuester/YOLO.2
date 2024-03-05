@@ -36,10 +36,3 @@ class UserController():
     def get_users():
         print(request.args.get("email"))
         return UserController.__user_service.getAllUsers(request.args.get("email")), 200
-
-
-    @staticmethod
-    @user_controller.route('/premium', methods=["POST"])
-    def premium_user():
-       #TODO
-        pass
