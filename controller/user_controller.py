@@ -26,10 +26,10 @@ class UserController():
     def login_users():
         data = request.json
         response =  UserController.__user_service.login_user(data["email"], data["password"])
-        if response["success"]:
+        if response:
             return response, 200
         else:
-            return response, 400
+            return jsonify({"error": "user not found", "success": False}), 400
     
     @staticmethod
     @user_controller.route('/', methods=["GET"])

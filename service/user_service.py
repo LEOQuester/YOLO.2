@@ -14,7 +14,7 @@ class UserService():
         user_dict = user.to_dict()
         operation = self.__driver.create_document('users', user_dict)
         return {"success": True}
-    
+
     def login_user(self, email, password):
         users = self.__driver.find_by_parameter("users", {"email": email})
         if not users:
@@ -23,10 +23,10 @@ class UserService():
         if not self.verify_password(password.encode('utf-8'), user['password']):
             return {"success": False, "message": "Invalid email or password", "user": None}
         else:
-            key = user['password'].decode('utf-8')
-            return {"success": True, "message": "Login successful", "user": user['name'], "email": user['email'],
-                    "role": user['role'], "password": key}
-    
+            # Decode the password from bytes to string
+            user['password'] = user['password'].decode('utf-8')
+            return user
+
     def getAllUsers(self, email):
         users = self.__driver.find_by_parameter("test", {"email": email})
 

@@ -12,24 +12,18 @@ class CreatorController():
     __creator_service = CreatorService()
 
     @staticmethod
-    @creator_controller.route('/', methods=['POST'])
-    def update_creator():
-        data = request.json
-        return jsonify(CreatorController.__creator_service.update_to_creator(data["email"], data["phone"], data["sm_links"]))
-
-    @staticmethod
     @creator_controller.route('/', methods=['GET'])
     def get_all_creators():
         return jsonify(CreatorController.__creator_service.get_all_creators())
 
     @staticmethod
     @creator_controller.route('/pending', methods=['GET'])
-    def get_pending_creators():
+    def get_pending_requests():
         return jsonify(CreatorController.__creator_service.get_pending_requests())
 
     @staticmethod
     @creator_controller.route('/request', methods=['POST'])
-    def request_application():
+    def signup_for_creator():
         data = request.json
         response = CreatorController.__creator_service.signup_for_creator(data["email"], data['type'], data['link'],
                                                                           data['business_email'], data['description'])
