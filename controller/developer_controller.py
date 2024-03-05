@@ -23,3 +23,15 @@ class DeveloperController():
         email = request.args.get('email', default='', type=str)
         return DeveloperController.__developer_service.get_requests(email)
 
+    @staticmethod
+    @developer_controller.route('/generate', methods=['GET'])
+    def generate_token():
+        #TODO
+        pass
+
+    @staticmethod
+    @developer_controller.route('/usage', methods=['GET'])
+    def fetch_all():
+        #TODO
+        pass
+

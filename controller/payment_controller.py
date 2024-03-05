@@ -1,14 +1,19 @@
-from flask import Flask, Blueprint, request
+import json
+
+from flask import Flask, Blueprint, request, redirect, jsonify
 import stripe
 import os
 from flask_cors import CORS
+from service.ledger_service import LedgerService
+
 
 payment_controller = Blueprint('payment_controller', __name__)
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 CORS(payment_controller)
 
-YOUR_DOMAIN = 'http://localhost:5000'  # Change later
+YOUR_DOMAIN = 'http://localhost:3000'  # Change later
 
+ledger = LedgerService()
 
 
 @payment_controller.route('/', methods=['GET'])
@@ -48,8 +53,8 @@ def create_checkout_session():
                 },
             ],
             mode='subscription',
-            success_url=YOUR_DOMAIN + '/success.html',
-            cancel_url=YOUR_DOMAIN + '/cancel.html'
+            success_url=YOUR_DOMAIN + '/success',
+            cancel_url=YOUR_DOMAIN + '/cancel'
             ,
         )
         return {"success": True, "url": checkout_session.url}
@@ -117,3 +122,5 @@ def webhook_received():
         print('Subscription canceled: %s', event.id)
 
     return jsonify({'status': 'success'})
+
+

@@ -11,17 +11,6 @@ class CreatorService:
         self.__driver = FirebaseDriver()
         self.__creator = Creator()
 
-    def update_to_creator(self, email):
-        creators = self.__driver.find_by_parameter("users", {"email": email})
-        if not creators:
-            return False
-        creator = creators[0]
-        # set creator to true in firebase
-        if self.__driver.update_document("users", creator["doc_id"], {"creator": True}):
-            return {"success": True, "message": "Creator Portal Unlocked Successfully"}
-        else:
-            return {"success": False}
-    
     def get_all_creators(self):
         # get users with the role creator set to true
         return self.__driver.find_by_parameter("users", {"creator": True})
@@ -47,7 +36,7 @@ class CreatorService:
 
     def get_pending_requests(self):
         # get users with the request flag set to pending
-        pendings = self.__driver.find_by_parameter("users", {"request": "pending"})
+        pendings = self.__driver.find_by_parameter("boost", {"request": "pending"})
         print(pendings)
         return pendings
             
@@ -59,7 +48,7 @@ class CreatorService:
             return {"success": True, "message": "OTP validated successfully"}
 
 
-    def add_request(self, email, type, link, business_email, description):
+    def signup_for_creator(self, email, type, link, business_email, description):
         #find user by email, add this info there, and set a flag for request as pending
         user = self.__driver.find_by_parameter("users", {"email": email})
         print(email, user)
@@ -67,8 +56,9 @@ class CreatorService:
             return {"success": False, "message": "User not found"}
         user = user[0]
         print(user)
-        if self.__driver.update_document("users", user["doc_id"], {"type": type, "link": link, "business_email": business_email, "description": description, "request": "pending"}):
+        if self.__driver.update_document("users", user["doc_id"], {"type": type, "link": link, "business_email": business_email, "description": description, "role": "creator"}):
             return {"success": True, "message": "Request added successfully"}
         else:
             return {"success": False, "message": "Request failed to add"}
+
 
