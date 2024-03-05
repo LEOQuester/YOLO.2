@@ -48,8 +48,8 @@ def create_checkout_session():
                 },
             ],
             mode='subscription',
-            success_url=YOUR_DOMAIN + '/success.html',
-            cancel_url=YOUR_DOMAIN + '/cancel.html'
+            success_url=YOUR_DOMAIN + '/success',
+            cancel_url=YOUR_DOMAIN + '/cancel'
             ,
         )
         return {"success": True, "url": checkout_session.url}
