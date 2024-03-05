@@ -21,3 +21,16 @@ class CollectionController():
     def all_collections():
          return jsonify(CollectionController.__collection_service.get_all_collections())
 
+    @staticmethod
+    @collection_controller.route('/', methods=["GET"])
+    def delete_collection():
+        data = request.json
+        collection = Collection(**data)
+        return jsonify(CollectionController.__collection_service.delete_collection(collection))
+
+    @staticmethod
+    @collection_controller.route('/', methods=["GET"])
+    def search_collection():
+        data = request.json
+        collection = Collection(**data)
+        return jsonify(CollectionController.__collection_service.search_collection(collection))

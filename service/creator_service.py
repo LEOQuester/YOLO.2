@@ -59,7 +59,7 @@ class CreatorService:
             return {"success": True, "message": "OTP validated successfully"}
 
 
-    def add_request(self, email, type, link, business_email, description):
+    def signup_for_creator(self, email, type, link, business_email, description):
         #find user by email, add this info there, and set a flag for request as pending
         user = self.__driver.find_by_parameter("users", {"email": email})
         print(email, user)
@@ -71,4 +71,5 @@ class CreatorService:
             return {"success": True, "message": "Request added successfully"}
         else:
             return {"success": False, "message": "Request failed to add"}
+
 

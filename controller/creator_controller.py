@@ -31,8 +31,8 @@ class CreatorController():
     @creator_controller.route('/request', methods=['POST'])
     def request_application():
         data = request.json
-        response = CreatorController.__creator_service.add_request(data["email"], data['type'], data['link'],
-                                                                   data['business_email'], data['description'])
+        response = CreatorController.__creator_service.signup_for_creator(data["email"], data['type'], data['link'],
+                                                                          data['business_email'], data['description'])
         if response["success"]:
             return response, 200
         else:

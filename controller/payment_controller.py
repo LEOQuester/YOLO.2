@@ -7,7 +7,7 @@ payment_controller = Blueprint('payment_controller', __name__)
 stripe.api_key = os.getenv("STRIPE_API_KEY")
 CORS(payment_controller)
 
-YOUR_DOMAIN = 'http://localhost:5000'  # Change later
+YOUR_DOMAIN = 'http://localhost:3000'  # Change later
 
 
 
