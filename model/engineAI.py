@@ -32,10 +32,7 @@ class Engine():
         print("HERE")
 
         #TODO: if error return error
-        print(output_text)
-        print(output_text[0])
         generated_text = output_text[0]['generated_text']
-        print(generated_text)
 
         # Using regex to find labels within brackets
         labels_texts = re.findall(r'\[(.*?)\]', generated_text, re.IGNORECASE)
@@ -61,7 +58,6 @@ class Engine():
           <end_of_turn>\n<start_of_turn>model
                 """
         }
-        print(payload)
 
         response = requests.post(self.__API_URL, headers=self.__headers, json=payload)
         json_response = response.json()
