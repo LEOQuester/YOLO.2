@@ -161,6 +161,8 @@ class Material():
                 }
                 books_list.append(book_info)
 
+                print(books_list)
+
             return books_list
 
         except requests.exceptions.RequestException as e:

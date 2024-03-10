@@ -4,7 +4,7 @@ from service.developer_service import DeveloperService
 from service.material_service import Material
 from flask_cors import CORS
 
-
+#TODO: IF response comes from react, then return info. if comes from outside, require auth token. validate auth token
 #TODO: BAD OUTPUT, CHECK THE RESPONSES, SENDS SAME EVERYTIME
 material_controller = Blueprint('material_controller', __name__)
 CORS(material_controller)
