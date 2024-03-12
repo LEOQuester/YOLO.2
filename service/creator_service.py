@@ -62,3 +62,14 @@ class CreatorService:
             return {"success": False, "message": "Request failed to add"}
 
 
+    def place_request(self, email, title, link, goal):
+        # add a new document to the boost collection with the request flag set to pending
+        new_boost = Boost()
+        new_boost.email = email
+        new_boost.title = title
+        new_boost.link = link
+        new_boost.goal = goal
+        new_boost.request = "pending"
+        new_boost.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.__driver.create_document("boost", new_boost.to_dict())
+        return {"success": True, "message": "Request added successfully"}, 200

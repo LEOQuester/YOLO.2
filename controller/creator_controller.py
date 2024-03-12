@@ -31,3 +31,11 @@ class CreatorController():
             return response, 200
         else:
             return response, 400
+
+
+    @staticmethod
+    @creator_controller.route('/boost', methods=['POST'])
+    def request_boost():
+        data = request.json
+        boost = Boost(**data)
+        return jsonify(CreatorController.__creator_service.request_boost(boost))
