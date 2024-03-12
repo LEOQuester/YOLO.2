@@ -25,6 +25,7 @@ class DeveloperController():
     @staticmethod
     @developer_controller.route('/generate', methods=['GET'])
     def generate_token():
-        #TODO
-        pass
+        email = request.args.get('email', default='', type=str)
+        return DeveloperController.__developer_service.make_new_token(email)
+
 

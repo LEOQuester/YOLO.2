@@ -52,7 +52,9 @@ class DeveloperService:
         if email:
             developer_data = self.__driver.find_by_parameter("users", {"email": email})
             if not developer_data:
-                return {"success": False, "Message": "user not found"}
+                #Create new develoepr 
+                self.createDeveloper(email)
+                return {"success": True, req_count: 0, "total_usage": 0}
             developer_data = developer_data[0]
             for key, value in developer_data.items():
                 if hasattr(self.__developer, key):
@@ -75,6 +77,22 @@ class DeveloperService:
 
         return {"success": False, "message": "email should not be empty"}    
 
+    def make_new_token(self, email):
+        if email:
+            developer_data = self.__driver.find_by_parameter("users", {"email": email})
+            if not developer_data:
+                return {"success": False, "message": "User not found"}
+            developer_data = developer_data[0]
+            for key, value in developer_data.items():
+                if hasattr(self.__developer, key):
+                    setattr(self.__developer, key, value)
+            dev_doc = developer_data["doc_id"]
+            new_uuid = uuid.uuid4()
+            self.__developer.api_key = str(new_uuid)
+            self.__driver.update_document('users', dev_doc, self.__developer.to_dict())
+            return {"success": True, "message": "Token generated successfully", "api_key": self.__developer.api_key}
+        return {"success": False, "message": "email issue"}
+
     def check_for_token(self, token):
         users = self.__driver.find_by_parameter("users", {"token": token})
         if not users:
@@ -86,4 +104,5 @@ class DeveloperService:
         user = users[0]
         user['usage_count'] += 1
         self.__driver.update_document("users", user['id'], user)
+        self.save_request(token)
         return user['usage_count']
