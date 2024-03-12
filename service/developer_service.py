@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from data.developer import Developer
 from service.user_service import UserService
 from repo.FirebaseDriver import FirebaseDriver
@@ -87,3 +90,12 @@ class DeveloperService:
         user['usage_count'] += 1
         self.__driver.update_document("users", user['id'], user)
         return user['usage_count']
+
+    def generate_newtoken(self, email, length=10):
+        alphabet = string.ascii_letters + string.digits
+        token = ''.join(secrets.choice(alphabet) for _ in range(length))
+        return token
+
+
+
+
