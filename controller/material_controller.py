@@ -15,6 +15,7 @@ def get_success_message():
 
 class MaterialController():
 
+    #IMPORTANT: ONLY KEYWORD ENDPOINT IS ACCESSIBLE FOR THE DEVELOPERS
     __developer_Service = DeveloperService()
     __material = Material()
 

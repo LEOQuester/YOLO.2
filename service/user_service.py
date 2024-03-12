@@ -49,3 +49,16 @@ class UserService():
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password, salt)
         return hashed_password
+
+    def check_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        if not users:
+            return False
+        return True
+
+    def increase_usage_count_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        user = users[0]
+        user['usage_count'] += 1
+        self.__driver.update_document("users", user['id'], user)
+        return user['usage_count']

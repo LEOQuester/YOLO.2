@@ -8,6 +8,7 @@ CORS(collection_controller)
 
 class CollectionController():
     __collection_service = CollectionService()
+    __user_service = UserService()
     
     @staticmethod
     @collection_controller.route('/', methods=["POST"])
