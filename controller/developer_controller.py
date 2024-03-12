@@ -7,7 +7,6 @@ CORS(developer_controller)
 
 class DeveloperController():
     __developer_service = DeveloperService()
-
     
     
     @staticmethod

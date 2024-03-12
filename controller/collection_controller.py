@@ -1,6 +1,7 @@
 from flask import jsonify, Blueprint, request
 from data.collection import Collection
 from service.collection_service import CollectionService
+from service.user_service import UserService
 from flask_cors import CORS
 
 collection_controller = Blueprint('collection_controller', __name__)
