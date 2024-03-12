@@ -15,9 +15,10 @@ def get_success_message():
 
 class MaterialController():
 
-    #IMPORTANT: ONLY KEYWORD ENDPOINT IS ACCESSIBLE FOR THE DEVELOPERS
+    #IMPORTANT: ONLY categorize ENDPOINT IS ACCESSIBLE FOR THE DEVELOPERS
     __developer_Service = DeveloperService()
     __material = Material()
+
 
     @staticmethod
     @material_controller.route("/keywords", methods=["POST"])
@@ -36,6 +37,28 @@ class MaterialController():
         engine = Engine()
         response = engine.query(prompt)
         return jsonify(response), 200
+
+    @staticmethod
+    @material_controller.route('/categorize', methods=['POST'])
+    def categorize():
+        # get the token from the request and check the user services for the token. update the token's usage count
+        if not request.is_json:
+            return jsonify({'error': 'request must contain JSON data'}), 400
+        try:
+            prompt = request.get_json()['prompt']
+            token = requrest.get_json()['token']
+        except KeyError:
+            return jsonify({'error': 'prompt or token is missing'}), 400
+        
+        if not prompt:
+            return jsonify({'error': 'prompt is empty'}), 400
+        
+        engine = Engine()
+        # if token:
+            
+        response = engine.query(prompt)
+
+
 
         
     @staticmethod

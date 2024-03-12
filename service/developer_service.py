@@ -10,7 +10,7 @@ class DeveloperService:
         self.__user_service = UserService()
         self.__developer = Developer()
 
-    def createDeveloper(self, email, upasswordhash):
+    def createDeveloper(self, email):
         #get developers from db
         developers = self.__driver.find_by_parameter("users", {"email": email})
         #validations
@@ -28,9 +28,6 @@ class DeveloperService:
         self.__developer.role = "developer"
         self.__developer.contact_number = developer_data.get('contact_number')
     
-        if not self.__user_service.verify_password(upasswordhash.encode('utf-8'), developer_data.get('password')):
-            return {"success": False, "message": "Invalid email or password", "user": None}
-
         new_uuid = uuid.uuid4()
         self.__developer.api_key = str(new_uuid)
         self.__driver.update_document('users', developer_data.get("doc_id"), self.__developer.to_dict())
@@ -77,3 +74,16 @@ class DeveloperService:
             
 
         return {"success": False, "message": "email should not be empty"}    
+
+    def check_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        if not users:
+            return False
+        return True
+
+    def increase_usage_count_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        user = users[0]
+        user['usage_count'] += 1
+        self.__driver.update_document("users", user['id'], user)
+        return user['usage_count']

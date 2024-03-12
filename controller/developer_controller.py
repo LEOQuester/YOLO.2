@@ -14,7 +14,7 @@ class DeveloperController():
     @developer_controller.route('/create', methods=["POST"])
     def unlock_developer():
         data = request.json
-        result = DeveloperController.__developer_service.createDeveloper(data["email"], data["password"])
+        result = DeveloperController.__developer_service.createDeveloper(data["email"])
         return result  
     
     @staticmethod
@@ -26,12 +26,6 @@ class DeveloperController():
     @staticmethod
     @developer_controller.route('/generate', methods=['GET'])
     def generate_token():
-        #TODO
-        pass
-
-    @staticmethod
-    @developer_controller.route('/usage', methods=['GET'])
-    def fetch_all():
         #TODO
         pass
 
