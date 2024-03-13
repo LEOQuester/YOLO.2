@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 import base64
 from requests import post
 import json
+
+from repo.FirebaseDriver import FirebaseDriver
+
 class Material():
 
 
@@ -13,6 +16,8 @@ class Material():
         self.CLIENT_ID = os.getenv('CLIENT_ID')
         self.CLIENT_SECRET = os.getenv('CLIENT_SECRET')
         self.REDIRECT_URI = 'http://localhost:5000/callback'
+
+        self.__driver = FirebaseDriver()
 
     def media_from_keywords(self, keywords, media_type):
         url = "https://api.themoviedb.org/3/discover/" + media_type
@@ -352,4 +357,14 @@ class Material():
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+        
+    def check_in_boosts(self, link):
+        print(link)
+        boosts = self.__driver.find_by_parameter("boosts", {"link": link, "status": "paid"})
+        print(boosts)
+        return boosts
+
+    # def get_all_boosts(self):
+    #     print(self.__driver.get_all_documents("boosts"))
+    #     return self.__driver.get_all_documents("boosts")
         
