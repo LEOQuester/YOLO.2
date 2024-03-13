@@ -49,11 +49,12 @@ class MaterialController():
     @material_controller.route('/categorize', methods=['POST'])
     def categorize():
         # get the token from the request and check the user services for the token. update the token's usage count
-        if not request.is_json:
+        if not request.json:
             return jsonify({'error': 'request must contain JSON data'}), 400
+        data = request.json
         try:
-            prompt = request.get_json()['prompt']
-            token = request.get_json()['token']
+            prompt = data['prompt']
+            token = data['token']
         except KeyError:
             return jsonify({'error': 'prompt or token is missing'}), 400
         
@@ -66,9 +67,9 @@ class MaterialController():
             return jsonify({"error": "api did not accept"}), 400
             
         response = engine.query(prompt)
-
-
-        
+        return jsonify({"success":True, "labels": response}), 200
+    
+            
     @staticmethod
     @material_controller.route('/tv', methods=[
         'GET'])  # example request : http://localhost:5000/movies?keywords=marvel,adventure&media_type=movie (movie / tv)
