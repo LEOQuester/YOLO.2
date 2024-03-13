@@ -28,6 +28,12 @@ class CreatorController():
         return jsonify(CreatorController.__creator_service.get_approved_reqeusts_for_cc(email))
 
     @staticmethod
+    @creator_controller.route('/paid', methods=['GET'])
+    def get_paid_request_by_email():
+        email = request.args.get("email")
+        return jsonify(CreatorController.__creator_service.get_paid_requests_for_cc(email))
+
+    @staticmethod
     @creator_controller.route('/request', methods=['POST'])
     def signup_for_creator():
         data = request.json

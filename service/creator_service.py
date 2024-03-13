@@ -206,3 +206,9 @@ class CreatorService:
         # get all the approved boosts for a creator
 
         return self.__driver.find_by_parameter("boosts", {"email": email, "status": "approved"})
+
+    def get_paid_requests_for_cc(self,email):
+
+        # get all the paid boosts for a creator
+
+        return self.__driver.find_by_parameter("boosts", {"email": email, "status": "paid"})
