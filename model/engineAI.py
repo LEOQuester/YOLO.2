@@ -23,7 +23,7 @@ class Engine():
             "police corruption", "police detective", "post-apocalypse", "postmodern",
             "psychopath", "race against time", "redemption", "rescue", "road movie", "robbery",
             "robot", "romance", "satire","sadness", "self sacrifice", "serial killer", "shootout",
-            "slasher", "spirituality", "steampunk", "superhero", "supernatural", "swashbuckler",
+            "slasher", "spirituality", "steampunk", "superhero", "supernatural", "swashbuckler","peaceful","secluded",
             "sword and sandal", "time travel", "vampire", "virtual reality", "wuxia", "zombie"
         ]
 
@@ -65,3 +65,6 @@ class Engine():
         labels = self.clean(json_response)
         print(labels)
         return labels
+
+    def get_all_keywords(self):
+        return self.__predefined_labels

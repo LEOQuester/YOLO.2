@@ -145,3 +145,10 @@ class MaterialController():
             return jsonify(result)
         else:
             return jsonify({"error": "An error occurred while fetching media data."}), 500
+    
+    
+    @staticmethod
+    @material_controller.route('/keywords', methods=['GET'])
+    def get_all_keywords():
+        engine = Engine()
+        return engine.get_all_keywords()
