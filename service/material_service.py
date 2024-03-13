@@ -185,8 +185,14 @@ class Material():
             # Extract relevant information from the API response
             songs = response.json().get('tracks', {}).get('items', [])
 
+            print("songs from spotify:  ", [song['name'] for song in songs])
+            
             # Customize the return object for each song
-            formatted_songs = []
+            remaining_songs = []
+            boosted_songs = self.get_all_paid_boosts()
+            
+            print("boosted songs: ", boosted_songs)
+            boosts = []
             for song in songs:
                 formatted_song = {
                     'thumbnail': song['album']['images'][0]['url'],
@@ -196,11 +202,19 @@ class Material():
                     'song_url': song['external_urls']['spotify'],
                     'release_date': song['album']['release_date']
                 }
-                formatted_songs.append(formatted_song)
-        except:
-            pass
+                
+                for boosted_song in boosted_songs:
+                    if boosted_song["content_url"] == formatted_song["song_url"]:
+                        boosts.append(boosted_song)
+                    else:
+                        remaining_songs.append(formatted_song)
+                        
+            print("arrangement:",[boost["title"] for boost in boosts] + [remaining_song["title"] for  remaining_song in remaining_songs])
+            return boosts + remaining_songs
+                        
+        except Exception as e:
+            print(e)
 
-        return formatted_songs
 
     def get_books(self, keywords):
         print(keywords)
@@ -210,7 +224,6 @@ class Material():
 
         try:
             response = requests.get(url, params=params)
-            print(response.json())
             response.raise_for_status()  # Raise an exception for bad requests
             data = response.json()
 
@@ -234,8 +247,6 @@ class Material():
                     "maturity": volume_info.get("maturityRating", "Data not available"),
                 }
                 books_list.append(book_info)
-
-                print(books_list)
 
             return books_list
 
@@ -358,9 +369,8 @@ class Material():
             print(f"An error occurred: {e}")
             return None
         
-    def check_in_boosts(self, link):
-        print(link)
-        boosts = self.__driver.find_by_parameter("boosts", {"link": link, "status": "paid"})
+    def get_all_paid_boosts(self):
+        boosts = self.__driver.find_by_parameter("boosts", {"status": "paid"})
         print(boosts)
         return boosts
 
