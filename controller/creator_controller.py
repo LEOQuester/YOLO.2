@@ -38,4 +38,4 @@ class CreatorController():
     def request_boost():
         data = request.json
         boost = Boost(**data)
-        return jsonify(CreatorController.__creator_service.request_boost(boost))
+        return jsonify(CreatorController.__creator_service.place_boost_request(boost))

@@ -2,19 +2,19 @@ from dataclasses import dataclass
 
 @dataclass
 class Boost:
-    content_type: str = None
+    title: str = None
     content_url: dict = None
-    creator_doc_id: str = None
+    email: str = None
     keywords: list = None
-    payment: bool = None
-    status: str = None  # approved / rejected
+    status: str = None  # approved / rejected / pending / paid
+    timestamp: str = None
 
     def to_dict(self):
         return {
-            'content_type': self.content_type,
+            'title': self.title,
             'content_url': self.content_url,
-            'creator_doc_id': self.creator_doc_id,
+            'email': self.email,
             'keywords': self.keywords,
-            'payment': self.payment,
             'status': self.status,
+            'timestamp': self.timestamp
         }
