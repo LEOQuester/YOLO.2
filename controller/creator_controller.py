@@ -37,5 +37,4 @@ class CreatorController():
     @creator_controller.route('/boost', methods=['POST'])
     def request_boost():
         data = request.json
-        boost = Boost(**data)
-        return jsonify(CreatorController.__creator_service.place_boost_request(boost))
+        return jsonify(CreatorController.__creator_service.place_boost_request(data["email"], data["title"], data["content_url"], data["keywords"]))

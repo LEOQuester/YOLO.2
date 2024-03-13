@@ -9,6 +9,7 @@ class Boost:
     status: str = None  # approved / rejected / pending / paid
     timestamp: str = None
 
+
     def to_dict(self):
         return {
             'title': self.title,

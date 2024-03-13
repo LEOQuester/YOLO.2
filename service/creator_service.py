@@ -6,8 +6,7 @@ from repo.FirebaseDriver import FirebaseDriver
 import random
 
 from twilio.rest import Client
-import datetime
-
+from datetime import datetime
 
 
 class CreatorService:
