@@ -53,7 +53,7 @@ class MaterialController():
             return jsonify({'error': 'request must contain JSON data'}), 400
         try:
             prompt = request.get_json()['prompt']
-            token = requrest.get_json()['token']
+            token = request.get_json()['token']
         except KeyError:
             return jsonify({'error': 'prompt or token is missing'}), 400
         
@@ -61,7 +61,9 @@ class MaterialController():
             return jsonify({'error': 'prompt is empty'}), 400
         
         engine = Engine()
-        # if token:
+
+        if MaterialController.__developer_Service.save_request(token) == False:
+            return jsonify({"error": "api did not accept"}), 400
             
         response = engine.query(prompt)
 
