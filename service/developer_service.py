@@ -110,14 +110,7 @@ class DeveloperService:
 
 
 
-
-<<<<<<< HEAD
-        return user['usage_count']
-
-
-=======
         self.save_request(token)
         return user['usage_count']
->>>>>>> refs/remotes/origin/main
 
 

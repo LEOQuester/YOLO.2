@@ -32,13 +32,7 @@ class DeveloperController():
         token = ''.join(secrets.choice(alphabet) for _ in range(length))
         return token
     
-<<<<<<< HEAD
-
-        #TODO
-        pass
-=======
         email = request.args.get('email', default='', type=str)
         return DeveloperController.__developer_service.make_new_token(email)
 
->>>>>>> refs/remotes/origin/main
 
