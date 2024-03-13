@@ -1,13 +1,22 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from model.engineAI import Engine
 from service.developer_service import DeveloperService
 from service.material_service import Material
 from flask_cors import CORS
-
+import base64
+from requests import post
+from dotenv import load_dotenv
+import os
 #TODO: IF response comes from react, then return info. if comes from outside, require auth token. validate auth token
 #TODO: BAD OUTPUT, CHECK THE RESPONSES, SENDS SAME EVERYTIME
 material_controller = Blueprint('material_controller', __name__)
 CORS(material_controller)
+
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+REDIRECT_URI = 'http://localhost:5000/callback'
+
+
 
 @material_controller.route('/', methods=['GET'])
 def get_success_message():
@@ -18,6 +27,13 @@ class MaterialController():
     #IMPORTANT: ONLY categorize ENDPOINT IS ACCESSIBLE FOR THE DEVELOPERS
     __developer_Service = DeveloperService()
     __material = Material()
+    # Spotify API endpoints
+    SPOTIFY_API_URL = 'https://api.spotify.com/v1/'
+
+    # OAuth2 Authorization URLs
+    AUTH_URL = 'https://accounts.spotify.com/authorize'
+    TOKEN_URL = 'https://accounts.spotify.com/api/token'
+
 
 
     @staticmethod
@@ -59,7 +75,6 @@ class MaterialController():
         response = engine.query(prompt)
 
 
-
         
     @staticmethod
     @material_controller.route('/tv', methods=[
@@ -70,15 +85,42 @@ class MaterialController():
         media_type = request.args.get('media_type')
         return jsonify(MaterialController.__material.media_from_keywords(keywords, media_type))
 
+
+    def get_token():
+        auth_string  = CLIENT_ID + ":" + CLIENT_SECRET
+        auth_bytes = auth_string.encode('utf-8')
+        auth_base64 = str(base64.b64encode(auth_bytes), 'utf-8')
+
+        url = "https://accounts.spotify.com/api/token"
+        headers = {
+            "Authorization": "Basic " + auth_base64,
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        data = {"grant_type": "client_credentials"}
+        result = post(url, headers=headers, data=data)
+        json_result = json.loads(result.content)
+        token = json_result['access_token']
+        return token
+
+
+    def get_auth_header(token):
+        return {"Authorization": "Bearer " + token}
+
+    
+
     @staticmethod
     @material_controller.route('/songs', methods=[
         'GET'])  # example request : http://localhost:5000/songs?keywords=marvel,adventure&media_type=song (song / video)
     def get_audio():
+        get_token()
         keywords_string = request.args.get('keywords', default='', type=str)
         media_type = request.args.get('media_type', default='', type=str)
         keywords_array = keywords_string.split(',')
         result = MaterialController.__material.get_songs(keywords_array, media_type)
         return jsonify(result)
+
+
 
     @staticmethod
     @material_controller.route('/books', methods=['GET'])  # example request : http://localhost:5000/books?keywords=marvel,adventure
