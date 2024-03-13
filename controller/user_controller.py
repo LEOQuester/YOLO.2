@@ -36,3 +36,9 @@ class UserController():
     def get_users():
         print(request.args.get("email"))
         return UserController.__user_service.getAllUsers(request.args.get("email")), 200
+
+
+    @staticmethod
+    @user_controller.route('/upgrade', methods=["GET"])
+    def upgrade_user():
+        return UserController.__user_service.upgradeUser(request.args.get("email")), 200
