@@ -62,7 +62,7 @@ class CreatorController():
     @creator_controller.route('/reject', methods=['GET'])
     def reject_boost():
         doc = request.args.get("doc")
-        return jsonify({"success": True, "message": "Boost rejected"}) if CreatorControler.__creator_service.reject_boost(doc) else jsonify({"success": False, "message": "Boost failed to reject"})
+        return jsonify({"success": True, "message": "Boost rejected"}) if CreatorController.__creator_service.reject_boost(doc) else jsonify({"success": False, "message": "Boost failed to reject"})
 
     @staticmethod
     @creator_controller.route('/approve_payment', methods=['GET'])
