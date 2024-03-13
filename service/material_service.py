@@ -1,8 +1,23 @@
 import requests
 from genres import GENRE_DATA
+
+import os
+from dotenv import load_dotenv
+import base64
+from requests import post
+import json
+
+from repo.FirebaseDriver import FirebaseDriver
+
 class Material():
-    def __intit__(self):
-        pass
+
+
+    def __init__(self):
+        self.CLIENT_ID = os.getenv('CLIENT_ID')
+        self.CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+        self.REDIRECT_URI = 'http://localhost:5000/callback'
+
+        self.__driver = FirebaseDriver()
 
     def media_from_keywords(self, keywords, media_type):
         url = "https://api.themoviedb.org/3/discover/" + media_type
@@ -85,48 +100,107 @@ class Material():
                 print(f"An error occurred for {word}: {e}")
 
         return keyword_ids
+
+    def get_token(self):
+        load_dotenv()
+        auth_string  = self.CLIENT_ID + ":" + self.CLIENT_SECRET
+        auth_bytes = auth_string.encode('utf-8')
+        auth_base64 = str(base64.b64encode(auth_bytes), 'utf-8')
+
+        url = "https://accounts.spotify.com/api/token"
+        headers = {
+            "Authorization": "Basic " + auth_base64,
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        data = {"grant_type": "client_credentials"}
+        result = post(url, headers=headers, data=data)
+        json_result = json.loads(result.content)
+        token = json_result['access_token']
+        return token
+
+
+    def get_auth_header(self, token):
+        return {"Authorization": "Bearer " + token}
+
+    
         
     def get_songs(self, keywords, media_type):
+
+        token = self.get_token()
+        headers = self.get_auth_header(token)
+
+        query = f"q={'+'.join(keywords)}&type=track&limit=20"
+
         if media_type == 'song':
             keywords.append('official music videos')
         if media_type == 'video':
             keywords.append('videos only')    
         q = ' '.join(keywords)
 
-        api_key = "AIzaSyD1CFHMw7mPYugkVMCoeRd69HPDOlchJUo"
-        url = "https://www.googleapis.com/youtube/v3/search"
-        params = {
-            'q': q,
-            'part': 'snippet',
-            'maxResults': '20',
-            'type': 'video',
-            'order': 'rating',
-            'key': api_key
-        }
+        spotify_url = "https://api.spotify.com/v1/search"
+
+
+
+
+        # api_key = "AIzaSyD1CFHMw7mPYugkVMCoeRd69HPDOlchJUo"
+        # url = "https://www.googleapis.com/youtube/v3/search"
+        # params = {
+        #     'q': q,
+        #     'part': 'snippet',
+        #     'maxResults': '20',
+        #     'type': 'video',
+        #     'order': 'rating',
+        #     'key': api_key
+        # }
+
+        # try:
+        #     response = requests.get(url, params=params)
+        #     response.raise_for_status()  # Raise an exception for bad requests
+
+        #     # Extract relevant information from the API response
+        #     videos = response.json().get('items', [])
+
+        #     # Customize the return object for each video
+        #     formatted_videos = []
+        #     for video in videos:
+        #         formatted_video = {
+        #             'thumbnail': video['snippet']['thumbnails']['medium']['url'],
+        #             'title': video['snippet']['title'],
+        #             'video_url': f"https://www.youtube.com/watch?v={video['id']['videoId']}",
+        #             'publishDate': video['snippet']['publishTime']
+        #         }
+        #         formatted_videos.append(formatted_video)
+
+        #     return formatted_videos
+
+        # except requests.exceptions.RequestException as e:
+        #     print(f"Error during API call: {e}")
+        #     return None
 
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(spotify_url, headers=headers, params=query)
             response.raise_for_status()  # Raise an exception for bad requests
 
             # Extract relevant information from the API response
-            videos = response.json().get('items', [])
+            songs = response.json().get('tracks', {}).get('items', [])
 
-            # Customize the return object for each video
-            formatted_videos = []
-            for video in videos:
-                formatted_video = {
-                    'thumbnail': video['snippet']['thumbnails']['medium']['url'],
-                    'title': video['snippet']['title'],
-                    'video_url': f"https://www.youtube.com/watch?v={video['id']['videoId']}",
-                    'publishDate': video['snippet']['publishTime']
+            # Customize the return object for each song
+            formatted_songs = []
+            for song in songs:
+                formatted_song = {
+                    'thumbnail': song['album']['images'][0]['url'],
+                    'title': song['name'],
+                    'artist': song['artists'][0]['name'],
+                    'album': song['album']['name'],
+                    'song_url': song['external_urls']['spotify'],
+                    'release_date': song['album']['release_date']
                 }
-                formatted_videos.append(formatted_video)
+                formatted_songs.append(formatted_song)
+        except:
+            pass
 
-            return formatted_videos
-
-        except requests.exceptions.RequestException as e:
-            print(f"Error during API call: {e}")
-            return None
+        return formatted_songs
 
     def get_books(self, keywords):
         print(keywords)
@@ -160,6 +234,8 @@ class Material():
                     "maturity": volume_info.get("maturityRating", "Data not available"),
                 }
                 books_list.append(book_info)
+
+                print(books_list)
 
             return books_list
 
@@ -281,4 +357,14 @@ class Material():
         except Exception as e:
             print(f"An error occurred: {e}")
             return None
+        
+    def check_in_boosts(self, link):
+        print(link)
+        boosts = self.__driver.find_by_parameter("boosts", {"link": link, "status": "paid"})
+        print(boosts)
+        return boosts
+
+    # def get_all_boosts(self):
+    #     print(self.__driver.get_all_documents("boosts"))
+    #     return self.__driver.get_all_documents("boosts")
         

@@ -49,3 +49,13 @@ class UserService():
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password, salt)
         return hashed_password
+
+    def upgradeUser(self, email):
+        users = self.__driver.find_by_parameter("users", {"email": email})
+        if not users:
+            return {"success": False, "message": "User not found"}
+        user = users[0]
+        if self.__driver.update_document("users", user["doc_id"], {"premium": True}):
+            return {"success": True, "message": "User upgraded successfully"}
+        else:
+            return {"success": False, "message": "User not upgraded"}

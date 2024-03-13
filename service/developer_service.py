@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from data.developer import Developer
 from service.user_service import UserService
 from repo.FirebaseDriver import FirebaseDriver
@@ -10,7 +13,7 @@ class DeveloperService:
         self.__user_service = UserService()
         self.__developer = Developer()
 
-    def createDeveloper(self, email, upasswordhash):
+    def createDeveloper(self, email):
         #get developers from db
         developers = self.__driver.find_by_parameter("users", {"email": email})
         #validations
@@ -25,12 +28,8 @@ class DeveloperService:
         self.__developer.name = developer_data.get('name')
         self.__developer.premium = developer_data.get('premium')
         self.__developer.region = developer_data.get('region')
-        self.__developer.role = "developer"
         self.__developer.contact_number = developer_data.get('contact_number')
     
-        if not self.__user_service.verify_password(upasswordhash.encode('utf-8'), developer_data.get('password')):
-            return {"success": False, "message": "Invalid email or password", "user": None}
-
         new_uuid = uuid.uuid4()
         self.__developer.api_key = str(new_uuid)
         self.__driver.update_document('users', developer_data.get("doc_id"), self.__developer.to_dict())
@@ -55,11 +54,30 @@ class DeveloperService:
         if email:
             developer_data = self.__driver.find_by_parameter("users", {"email": email})
             if not developer_data:
-                return {"success": False, "Message": "user not found"}
+                return {"success": False, "message": "User not found"}
+
+            
             developer_data = developer_data[0]
+
+
             for key, value in developer_data.items():
                 if hasattr(self.__developer, key):
                     setattr(self.__developer, key, value)
+
+            if not self.__developer.api_key:                
+                # Create a new developer and generate an API key
+                print("creating new dev")
+                create_result = self.createDeveloper(email)
+                if not create_result["success"]:
+                    return {"success": False, "message": "Failed to create user"}
+
+                # Fetch the newly created developer data
+                developer_data = self.__driver.find_by_parameter("users", {"email": email})
+                print(developer_data)
+                if not developer_data:
+                    return {"success": False, "message": "Failed to fetch user data after creation"}
+
+            
             dev_doc = developer_data["doc_id"]
             reqs = self.__driver.find_by_parameter("requests", {"dev_doc_id": dev_doc})
             
@@ -72,15 +90,42 @@ class DeveloperService:
                 human_readable_timestamps.append(human_readable_time)
                 int_timestamps.append(timestamp)
 
-            return {"success": True, "human_readable_timestamps": human_readable_timestamps, "int_timestamps": int_timestamps, "req_count": len(int_timestamps), "total_usage": self.__developer.quota}
-    
-            
+            return {"success": True, "token": self.__developer.api_key, "human_readable_timestamps": human_readable_timestamps, "int_timestamps": int_timestamps, "req_count": len(int_timestamps), "total_usage": self.__developer.quota}
 
-        return {"success": False, "message": "email should not be empty"}    
-    
-    def getKeyList():
-        response = {
-            "success": True,
-            "categories": ["key1", "key2"]
-        }
-        return response
+        return {"success": False, "message": "email should not be empty"}
+
+
+    def make_new_token(self, email):
+        if email:
+            developer_data = self.__driver.find_by_parameter("users", {"email": email})
+            if not developer_data:
+                return {"success": False, "message": "User not found"}
+            developer_data = developer_data[0]
+            for key, value in developer_data.items():
+                if hasattr(self.__developer, key):
+                    setattr(self.__developer, key, value)
+            dev_doc = developer_data["doc_id"]
+            new_uuid = uuid.uuid4()
+            self.__developer.api_key = str(new_uuid)
+            self.__driver.update_document('users', dev_doc, self.__developer.to_dict())
+            return {"success": True, "message": "Token generated successfully", "api_key": self.__developer.api_key}
+        return {"success": False, "message": "email issue"}
+
+    def check_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        if not users:
+            return False
+        return True
+
+    def increase_usage_count_for_token(self, token):
+        users = self.__driver.find_by_parameter("users", {"token": token})
+        user = users[0]
+        user['usage_count'] += 1
+        self.__driver.update_document("users", user['id'], user)
+
+
+
+        self.save_request(token)
+        return user['usage_count']
+
+

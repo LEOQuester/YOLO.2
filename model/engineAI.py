@@ -23,7 +23,7 @@ class Engine():
             "police corruption", "police detective", "post-apocalypse", "postmodern",
             "psychopath", "race against time", "redemption", "rescue", "road movie", "robbery",
             "robot", "romance", "satire","sadness", "self sacrifice", "serial killer", "shootout",
-            "slasher", "spirituality", "steampunk", "superhero", "supernatural", "swashbuckler",
+            "slasher", "spirituality", "steampunk", "superhero", "supernatural", "swashbuckler","peaceful","secluded",
             "sword and sandal", "time travel", "vampire", "virtual reality", "wuxia", "zombie"
         ]
 
@@ -32,10 +32,7 @@ class Engine():
         print("HERE")
 
         #TODO: if error return error
-        print(output_text)
-        print(output_text[0])
         generated_text = output_text[0]['generated_text']
-        print(generated_text)
 
         # Using regex to find labels within brackets
         labels_texts = re.findall(r'\[(.*?)\]', generated_text, re.IGNORECASE)
@@ -61,7 +58,6 @@ class Engine():
           <end_of_turn>\n<start_of_turn>model
                 """
         }
-        print(payload)
 
         response = requests.post(self.__API_URL, headers=self.__headers, json=payload)
         json_response = response.json()
@@ -69,3 +65,6 @@ class Engine():
         labels = self.clean(json_response)
         print(labels)
         return labels
+
+    def get_all_keywords(self):
+        return self.__predefined_labels

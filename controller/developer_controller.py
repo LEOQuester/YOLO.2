@@ -1,3 +1,6 @@
+import secrets
+import string
+
 from flask import Blueprint, request
 from service.developer_service import DeveloperService
 from flask_cors import CORS
@@ -7,14 +10,13 @@ CORS(developer_controller)
 
 class DeveloperController():
     __developer_service = DeveloperService()
-
     
     
     @staticmethod
     @developer_controller.route('/create', methods=["POST"])
     def unlock_developer():
         data = request.json
-        result = DeveloperController.__developer_service.createDeveloper(data["email"], data["password"])
+        result = DeveloperController.__developer_service.createDeveloper(data["email"])
         return result  
     
     @staticmethod
@@ -25,13 +27,12 @@ class DeveloperController():
 
     @staticmethod
     @developer_controller.route('/generate', methods=['GET'])
-    def generate_token():
-        #TODO
-        pass
+    def generate_token(length=20):
+        alphabet = string.ascii_letters + string.digits
+        token = ''.join(secrets.choice(alphabet) for _ in range(length))
+        return token
+    
+        email = request.args.get('email', default='', type=str)
+        return DeveloperController.__developer_service.make_new_token(email)
 
-    @staticmethod
-    @developer_controller.route('/usage', methods=['GET'])
-    def fetch_all():
-        #TODO
-        pass
 

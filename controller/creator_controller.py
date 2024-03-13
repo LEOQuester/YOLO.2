@@ -22,6 +22,18 @@ class CreatorController():
         return jsonify(CreatorController.__creator_service.get_pending_requests())
 
     @staticmethod
+    @creator_controller.route('/approved', methods=['GET'])
+    def get_approved_requests_by_email():
+        email = request.args.get("email")
+        return jsonify(CreatorController.__creator_service.get_approved_reqeusts_for_cc(email))
+
+    @staticmethod
+    @creator_controller.route('/paid', methods=['GET'])
+    def get_paid_request_by_email():
+        email = request.args.get("email")
+        return jsonify(CreatorController.__creator_service.get_paid_requests_for_cc(email))
+
+    @staticmethod
     @creator_controller.route('/request', methods=['POST'])
     def signup_for_creator():
         data = request.json
@@ -30,9 +42,30 @@ class CreatorController():
         if response["success"]:
             return response, 200
         else:
-            return response, 
+            return response, 400
+
 
     @staticmethod
     @creator_controller.route('/boost', methods=['POST'])
-    def save_boost():
-       return CreatorController.__creator_service.save_boost()
+    def request_boost():
+        data = request.json
+        return jsonify(CreatorController.__creator_service.place_boost_request(data["email"], data["title"], data["content_url"], data["keywords"]))
+
+    @staticmethod
+    @creator_controller.route('/approve', methods=['GET'])
+    def approve_boost():
+        doc = request.args.get("doc")
+        print(doc)
+        return  jsonify({"success": True, "message": "Boost approved"}) if CreatorController.__creator_service.approve_boost(doc) else jsonify({"success": False, "message": "Boost failed to approve"})
+
+    @staticmethod
+    @creator_controller.route('/reject', methods=['GET'])
+    def reject_boost():
+        doc = request.args.get("doc")
+        return jsonify({"success": True, "message": "Boost rejected"}) if CreatorController.__creator_service.reject_boost(doc) else jsonify({"success": False, "message": "Boost failed to reject"})
+
+    @staticmethod
+    @creator_controller.route('/approve_payment', methods=['GET'])
+    def approve_payment():
+        doc = request.args.get("doc")
+        return jsonify({"success": True, "message": "Payment approved"}) if CreatorController.__creator_service.approve_payment(doc) else jsonify({"success": False, "message": "Payment failed to approve"})

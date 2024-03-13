@@ -15,8 +15,17 @@ def get_success_message():
 
 class MaterialController():
 
+    #IMPORTANT: ONLY categorize ENDPOINT IS ACCESSIBLE FOR THE DEVELOPERS
     __developer_Service = DeveloperService()
     __material = Material()
+    # Spotify API endpoints
+    SPOTIFY_API_URL = 'https://api.spotify.com/v1/'
+
+    # OAuth2 Authorization URLs
+    AUTH_URL = 'https://accounts.spotify.com/authorize'
+    TOKEN_URL = 'https://accounts.spotify.com/api/token'
+
+
 
     @staticmethod
     @material_controller.route("/keywords", methods=["POST"])
@@ -36,6 +45,27 @@ class MaterialController():
         response = engine.query(prompt)
         return jsonify(response), 200
 
+    @staticmethod
+    @material_controller.route('/categorize', methods=['POST'])
+    def categorize():
+        # get the token from the request and check the user services for the token. update the token's usage count
+        if not request.is_json:
+            return jsonify({'error': 'request must contain JSON data'}), 400
+        try:
+            prompt = request.get_json()['prompt']
+            token = requrest.get_json()['token']
+        except KeyError:
+            return jsonify({'error': 'prompt or token is missing'}), 400
+        
+        if not prompt:
+            return jsonify({'error': 'prompt is empty'}), 400
+        
+        engine = Engine()
+        # if token:
+            
+        response = engine.query(prompt)
+
+
         
     @staticmethod
     @material_controller.route('/tv', methods=[
@@ -46,6 +76,9 @@ class MaterialController():
         media_type = request.args.get('media_type')
         return jsonify(MaterialController.__material.media_from_keywords(keywords, media_type))
 
+
+
+
     @staticmethod
     @material_controller.route('/songs', methods=[
         'GET'])  # example request : http://localhost:5000/songs?keywords=marvel,adventure&media_type=song (song / video)
@@ -55,6 +88,8 @@ class MaterialController():
         keywords_array = keywords_string.split(',')
         result = MaterialController.__material.get_songs(keywords_array, media_type)
         return jsonify(result)
+
+
 
     @staticmethod
     @material_controller.route('/books', methods=['GET'])  # example request : http://localhost:5000/books?keywords=marvel,adventure
@@ -73,12 +108,12 @@ class MaterialController():
         keywords_array = keywords_string.split(',')
         return MaterialController.__material.get_anime(keywords_array, media_type)
     
-    @staticmethod
-    @material_controller.route('/categorize', methods=[
-        'POST']) 
-    def get_keywords():
-        data = request.json
-        return MaterialController.__developer_Service.getKeyList(data['prompt'])
+    # @staticmethod
+    # @material_controller.route('/categorize', methods=[
+    #     'POST']) 
+    # def get_keywords():
+    #     data = request.json
+    #     return MaterialController.__developer_Service.getKeyList(data['prompt'])
     
 
     # public endpoint need a dynamic api key assiging and validation for developer role unlocked users
@@ -112,3 +147,10 @@ class MaterialController():
             return jsonify(result)
         else:
             return jsonify({"error": "An error occurred while fetching media data."}), 500
+    
+    
+    @staticmethod
+    @material_controller.route('/keywords', methods=['GET'])
+    def get_all_keywords():
+        engine = Engine()
+        return engine.get_all_keywords()
