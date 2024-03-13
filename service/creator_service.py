@@ -200,6 +200,12 @@ class CreatorService:
 
             return self.__driver.update_document("boosts", doc_id, {"status": "rejected"})
 
+    def approve_payment(self, doc_id):
+
+        # update the status of the boost request to paid
+
+        return self.__driver.update_document("boosts", doc_id, {"status": "paid"})
+
 
     def get_approved_reqeusts_for_cc(self,email):
 
