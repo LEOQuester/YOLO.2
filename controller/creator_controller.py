@@ -38,3 +38,15 @@ class CreatorController():
     def request_boost():
         data = request.json
         return jsonify(CreatorController.__creator_service.place_boost_request(data["email"], data["title"], data["content_url"], data["keywords"]))
+
+    @staticmethod
+    @creator_controller.route('/approve', methods=['GET'])
+    def approve_boost():
+        doc = request.args.get("doc")
+        return jsonify(CreatorController.__creator_service.approve_boost(doc))
+
+    @staticmethod
+    @creator_controller.route('/reject', methods=['GET'])
+    def approve_boost():
+        doc = request.args.get("doc")
+        return jsonify(CreatorController.__creator_service.reject_boost(doc))
