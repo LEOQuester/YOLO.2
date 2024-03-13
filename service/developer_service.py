@@ -28,7 +28,6 @@ class DeveloperService:
         self.__developer.name = developer_data.get('name')
         self.__developer.premium = developer_data.get('premium')
         self.__developer.region = developer_data.get('region')
-        self.__developer.role = "developer"
         self.__developer.contact_number = developer_data.get('contact_number')
     
         new_uuid = uuid.uuid4()
@@ -55,13 +54,30 @@ class DeveloperService:
         if email:
             developer_data = self.__driver.find_by_parameter("users", {"email": email})
             if not developer_data:
-                #Create new develoepr 
-                self.createDeveloper(email)
-                return {"success": True, req_count: 0, "total_usage": 0}
+                return {"success": False, "message": "User not found"}
+
+            
             developer_data = developer_data[0]
+
+
             for key, value in developer_data.items():
                 if hasattr(self.__developer, key):
                     setattr(self.__developer, key, value)
+
+            if not self.__developer.api_key:                
+                # Create a new developer and generate an API key
+                print("creating new dev")
+                create_result = self.createDeveloper(email)
+                if not create_result["success"]:
+                    return {"success": False, "message": "Failed to create user"}
+
+                # Fetch the newly created developer data
+                developer_data = self.__driver.find_by_parameter("users", {"email": email})
+                print(developer_data)
+                if not developer_data:
+                    return {"success": False, "message": "Failed to fetch user data after creation"}
+
+            
             dev_doc = developer_data["doc_id"]
             reqs = self.__driver.find_by_parameter("requests", {"dev_doc_id": dev_doc})
             
@@ -74,11 +90,10 @@ class DeveloperService:
                 human_readable_timestamps.append(human_readable_time)
                 int_timestamps.append(timestamp)
 
-            return {"success": True, "human_readable_timestamps": human_readable_timestamps, "int_timestamps": int_timestamps, "req_count": len(int_timestamps), "total_usage": self.__developer.quota}
-    
-            
+            return {"success": True, "token": self.__developer.api_key, "human_readable_timestamps": human_readable_timestamps, "int_timestamps": int_timestamps, "req_count": len(int_timestamps), "total_usage": self.__developer.quota}
 
-        return {"success": False, "message": "email should not be empty"}    
+        return {"success": False, "message": "email should not be empty"}
+
 
     def make_new_token(self, email):
         if email:
