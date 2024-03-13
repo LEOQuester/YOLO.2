@@ -126,12 +126,12 @@ class CreatorService:
         return {"success": True, "message": "Request added successfully"}, 200
 
 
-    def approve_boost(doc_id):
+    def approve_boost(self, doc_id):
             
         # update the status of the boost request to approved
         return self.__driver.update_document("boosts", doc_id, {"status": "approved"})
 
-    def reject_boost(doc_id):
+    def reject_boost(self, doc_id):
                 
             # update the status of the boost request to rejected
             return self.__driver.update_document("boosts", doc_id, {"status": "rejected"})

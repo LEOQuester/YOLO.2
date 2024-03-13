@@ -43,10 +43,11 @@ class CreatorController():
     @creator_controller.route('/approve', methods=['GET'])
     def approve_boost():
         doc = request.args.get("doc")
-        return jsonify(CreatorController.__creator_service.approve_boost(doc))
+        print(doc)
+        return  jsonify({"success": True, "message": "Boost approved"}) if CreatorController.__creator_service.approve_boost(doc) else jsonify({"success": False, "message": "Boost failed to approve"})
 
     @staticmethod
     @creator_controller.route('/reject', methods=['GET'])
     def reject_boost():
         doc = request.args.get("doc")
-        return jsonify(CreatorController.__creator_service.reject_boost(doc))
+        return jsonify({"success": True, "message": "Boost rejected"}) if CreatorControler.__creator_service.reject_boost(doc) else jsonify({"success": False, "message": "Boost failed to reject"})
