@@ -12,10 +12,6 @@ import os
 material_controller = Blueprint('material_controller', __name__)
 CORS(material_controller)
 
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-REDIRECT_URI = 'http://localhost:5000/callback'
-
 
 
 @material_controller.route('/', methods=['GET'])
@@ -92,7 +88,6 @@ class MaterialController():
     @material_controller.route('/songs', methods=[
         'GET'])  # example request : http://localhost:5000/songs?keywords=marvel,adventure&media_type=song (song / video)
     def get_audio():
-        get_token()
         keywords_string = request.args.get('keywords', default='', type=str)
         media_type = request.args.get('media_type', default='', type=str)
         keywords_array = keywords_string.split(',')
