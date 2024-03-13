@@ -64,7 +64,7 @@ class CreatorService:
 
         # get users with the request flag set to pending
 
-        pendings = self.__driver.find_by_parameter("boost", {"request": "pending"})
+        pendings = self.__driver.find_by_parameter("boosts", {"status": "pending"})
 
         print(pendings)
 
@@ -124,3 +124,14 @@ class CreatorService:
         self.__driver.create_document("boosts", new_boost.to_dict())
 
         return {"success": True, "message": "Request added successfully"}, 200
+
+
+    def approve_boost(doc_id):
+            
+        # update the status of the boost request to approved
+        return self.__driver.update_document("boosts", doc_id, {"status": "approved"})
+
+    def reject_boost(doc_id):
+                
+            # update the status of the boost request to rejected
+            return self.__driver.update_document("boosts", doc_id, {"status": "rejected"})
