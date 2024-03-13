@@ -73,6 +73,13 @@ class MaterialController():
         keywords_array = keywords_string.split(',')
         return MaterialController.__material.get_anime(keywords_array, media_type)
     
+    @staticmethod
+    @material_controller.route('/categorize', methods=[
+        'POST']) 
+    def get_keywords():
+        data = request.json
+        return MaterialController.__developer_Service.getKeyList(data['prompt'])
+    
 
     # public endpoint need a dynamic api key assiging and validation for developer role unlocked users
     @staticmethod

@@ -38,18 +38,3 @@ class CollectionController():
             return jsonify({"error": "Document ID not provided"}), 400
         
     
-
-
-    @staticmethod
-    @collection_controller.route('/', methods=["GET"])
-    def delete_collection():
-        data = request.json
-        collection = Collection(**data)
-        return jsonify(CollectionController.__collection_service.delete_collection(collection))
-
-    @staticmethod
-    @collection_controller.route('/', methods=["GET"])
-    def search_collection():
-        data = request.json
-        collection = Collection(**data)
-        return jsonify(CollectionController.__collection_service.search_collection(collection))

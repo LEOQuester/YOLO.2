@@ -77,3 +77,10 @@ class DeveloperService:
             
 
         return {"success": False, "message": "email should not be empty"}    
+    
+    def getKeyList():
+        response = {
+            "success": True,
+            "categories": ["key1", "key2"]
+        }
+        return response

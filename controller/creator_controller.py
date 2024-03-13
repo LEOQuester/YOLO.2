@@ -26,8 +26,13 @@ class CreatorController():
     def signup_for_creator():
         data = request.json
         response = CreatorController.__creator_service.signup_for_creator(data["email"], data['type'], data['link'],
-                                                                          data['business_email'], data['description'])
+                                                                          data['business_email'], data['description']   )
         if response["success"]:
             return response, 200
         else:
-            return response, 400
+            return response, 
+
+    @staticmethod
+    @creator_controller.route('/boost', methods=['POST'])
+    def save_boost():
+       return CreatorController.__creator_service.save_boost()
