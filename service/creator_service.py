@@ -119,6 +119,7 @@ class CreatorService:
         new_boost.status = "pending"
 
         new_boost.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(new_boost.to_dict())
 
         self.__driver.create_document("boosts", new_boost.to_dict())
 
