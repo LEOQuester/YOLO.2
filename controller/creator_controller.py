@@ -47,6 +47,6 @@ class CreatorController():
 
     @staticmethod
     @creator_controller.route('/reject', methods=['GET'])
-    def approve_boost():
+    def reject_boost():
         doc = request.args.get("doc")
         return jsonify(CreatorController.__creator_service.reject_boost(doc))
