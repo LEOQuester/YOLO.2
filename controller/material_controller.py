@@ -1,18 +1,13 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify
 from model.engineAI import Engine
 from service.developer_service import DeveloperService
 from service.material_service import Material
 from flask_cors import CORS
-import base64
-from requests import post
-from dotenv import load_dotenv
-import os
-#TODO: IF response comes from react, then return info. if comes from outside, require auth token. validate auth token
+
+
 #TODO: BAD OUTPUT, CHECK THE RESPONSES, SENDS SAME EVERYTIME
 material_controller = Blueprint('material_controller', __name__)
 CORS(material_controller)
-
-
 
 @material_controller.route('/', methods=['GET'])
 def get_success_message():
@@ -112,6 +107,13 @@ class MaterialController():
         media_type = request.args.get('media_type', default='', type=str)
         keywords_array = keywords_string.split(',')
         return MaterialController.__material.get_anime(keywords_array, media_type)
+    
+    # @staticmethod
+    # @material_controller.route('/categorize', methods=[
+    #     'POST']) 
+    # def get_keywords():
+    #     data = request.json
+    #     return MaterialController.__developer_Service.getKeyList(data['prompt'])
     
 
     # public endpoint need a dynamic api key assiging and validation for developer role unlocked users
